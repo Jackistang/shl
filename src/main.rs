@@ -15,14 +15,22 @@ fn main() -> Result<(), Error> {
         let mut line = String::new();
         io::stdin().read_line(&mut line).unwrap();
 
-        let str = line.trim();
-        if str == "" {
+        let args: Vec<&str> = line.trim().split(' ').collect();
+        let cmd = &args[0];
+
+        if cmd == &"" {
             continue;
-        } else if str == "exit" {
+        } else if cmd == &"exit" {
             break ;
+        } else if cmd == &"cd" {
+            match std::env::set_current_dir(args[1]) {
+                Err(err)    =>   {
+                    println!("cd: {}: {}", args[1], err);
+                },
+                Ok(_)        =>  { },
+            };
         } else {
             // 创建一个子进程执行该程序
-            let args: Vec<&str> = str.split(' ').collect();
             let output = Command::new(args[0])
                                 .args(&args[1..])
                                 .output();
