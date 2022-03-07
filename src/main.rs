@@ -1,8 +1,7 @@
 use std::io::{self, Write};
+use std::io::Error;
 
-
-fn main() -> io::Result<()> {
-    println!("Hello, shl!");
+fn main() -> Result<(), Error> {
 
     loop {
         print!("shl$ ");
@@ -15,9 +14,11 @@ fn main() -> io::Result<()> {
         if str == "" {
             continue;
         } else if str == "exit" {
-            return Ok(());
+            break ;
         } else {
             println!("Unsupported command");
         }
     }
+
+    Ok(())
 }
