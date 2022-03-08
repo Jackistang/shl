@@ -1,28 +1,26 @@
 use std::io::{self, Write};
-use std::io::Error;
 use std::process::{Command};
+
+use rustyline::{Editor, Result};
 
 pub fn set_prompt(prompt: &str) {
     print!("{}", prompt);
     io::stdout().flush().unwrap();
 }
 
-fn main() -> Result<(), Error> {
-    let stdout = io::stdout();
+fn main() -> Result<()> {
+    let mut rl = Editor::<()>::new();
+
     loop {
-        set_prompt("");
-
-        let mut line = String::new();
-        io::stdin().read_line(&mut line).unwrap();
-
+        let line = rl.readline("shl$ ")?;
         let args: Vec<&str> = line.trim().split(' ').collect();
-        let cmd = &args[0];
 
-        if cmd == &"" {
+        let cmd = String::from(args[0]);
+        if cmd == "" {
             continue;
-        } else if cmd == &"exit" {
+        } else if cmd == "exit" {
             break ;
-        } else if cmd == &"cd" {
+        } else if cmd == "cd" {
             match std::env::set_current_dir(args[1]) {
                 Err(err)    =>   {
                     println!("cd: {}: {}", args[1], err);

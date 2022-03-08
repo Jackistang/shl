@@ -10,3 +10,4 @@ assert_cmd = "2.0.4"
 predicates = "2.1.1"
 
 [dependencies]
+rustyline = "9.1.2"
