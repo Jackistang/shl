@@ -1,18 +1,27 @@
-use std::io::{self, Write};
 use std::process::{Command};
 
 use rustyline::{Editor, Result};
+use clap::{Parser};
 
-pub fn set_prompt(prompt: &str) {
-    print!("{}", prompt);
-    io::stdout().flush().unwrap();
+#[derive(Parser)]
+struct Args {
+    /// Test flag
+    #[clap(long)]
+    test: bool
 }
 
 fn main() -> Result<()> {
-    let mut rl = Editor::<()>::new();
+    let args = Args::parse();
 
+    let prompt; 
+    match args.test {
+        true  => prompt = String::from(""),
+        false => prompt = String::from("shl$ "),
+    };
+
+    let mut rl = Editor::<()>::new();
     loop {
-        let line = rl.readline("shl$ ")?;
+        let line = rl.readline(&prompt)?;
         let args: Vec<&str> = line.trim().split(' ').collect();
 
         let cmd = String::from(args[0]);

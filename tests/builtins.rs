@@ -1,18 +1,20 @@
-use assert_cmd::Command; // Run programs
-use predicates::prelude::*;
 use std::env;
+
+mod common;
+
+// TODO 给 shl 添加一个 --test 选项，用于将提示符 prompt 取消，方便测试。
 
 #[test]
 fn cd() {
     // TODO 获取环境变量 Home，通过 cd 命令切换到 Home 目录，并用 pwd 检测。
     let home = env::var("HOME").unwrap();
 
-    let mut cmd = Command::cargo_bin("shl").unwrap();
-    cmd.write_stdin(format!("cd {}\n pwd \n exit", home))
-        .assert()
-        .success()
-        .stdout(predicate::str::diff(format!("{}\n", home)));
-
+    common::exec_command(
+        // stdin
+        &format!("cd {}\n pwd \n exit", home), 
+        // stdout
+        &format!("{}\n", home),
+    );
 }
 
 
@@ -20,9 +22,8 @@ fn cd() {
 fn extern_command() {
     let path = env::current_dir().unwrap();
 
-    let mut cmd = Command::cargo_bin("shl").unwrap();
-    cmd.write_stdin("pwd \n exit")
-        .assert()
-        .success()
-        .stdout(predicate::str::diff(format!("{}\n", path.to_str().unwrap())));
+    common::exec_command(
+        "pwd \n exit",
+        &format!("{}\n", path.to_str().unwrap()),
+    );
 }
